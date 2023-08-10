@@ -30,7 +30,9 @@ class CreateNoteBloc extends Bloc<CreateNoteEvent, CreateNoteState> {
         id: '',
         title: titleController.text,
         body: descriptionController.text);
-    await repository.addNote(note);
+    if (titleController.text.isNotEmpty || descriptionController.text.isNotEmpty) {
+      await repository.addNote(note);
+    }
     emit(CreateNoteNavigateBackState());
   }
 

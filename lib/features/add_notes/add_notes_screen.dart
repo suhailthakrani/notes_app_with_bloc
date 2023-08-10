@@ -69,24 +69,22 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 50,
-                        child: TextField(
-                          controller:
-                              context.read<CreateNoteBloc>().titleController,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 24,
-                            color:  Colors.white,
-                          ),
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
-                            hintText: 'Add Title to Your Note',
-                            hintStyle: TextStyle(
-                              color: Colors.white60,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
+                      TextField(
+                        controller:
+                            context.read<CreateNoteBloc>().titleController,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 24,
+                          color:  Colors.white,
+                        ),
+                        maxLines: 1,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                          hintText: 'Add Title to Your Note',
+                          hintStyle: TextStyle(
+                            color: Colors.white60,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -110,7 +108,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
               );
 
             default:
-              return const Scaffold();
+              return Scaffold(body: Center(child: Text(state.toString(), style: TextStyle(color: Colors.white),)),);
           }
         },
       ),

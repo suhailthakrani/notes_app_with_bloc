@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app_with_bloc/blocs/view_note/view_note_bloc.dart';
 
@@ -43,6 +43,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
   @override
   void onTransition(Transition<NotesEvent, NotesState> transition) {
+    if (transition.nextState is NotesLoadingState) {
+      add(const NotesLoadNotesEvent());
+    }
     if (transition.nextState is NotesNavigateToCreateNoteState) {
       add(const NotesLoadNotesEvent());
     }
