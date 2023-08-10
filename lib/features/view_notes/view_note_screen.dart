@@ -11,7 +11,6 @@ class ViewNoteScreen extends StatelessWidget {
     return BlocBuilder<ViewNoteBloc, ViewNoteState>(
       bloc: context.read<ViewNoteBloc>()..add(ViewNoteInitialEvent()),
       builder: (context, state) {
-        print(state);
         if (state is ViewNoteInitialState) {
           return const Scaffold(
             body: Center(
@@ -28,8 +27,9 @@ class ViewNoteScreen extends StatelessWidget {
                 Text(
                   state.note.title,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 24,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white
                   ),
                   softWrap: true,
                 ),
@@ -40,6 +40,7 @@ class ViewNoteScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
+                    color: Colors.white70,
                   ),
                   softWrap: true,
                 ),

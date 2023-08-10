@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app_with_bloc/blocs/create_note/create_note_bloc.dart';
 import 'package:notes_app_with_bloc/blocs/view_note/view_note_bloc.dart';
+import 'package:notes_app_with_bloc/commons/widgets/note_card.dart';
 import 'package:notes_app_with_bloc/features/view_notes/view_note_screen.dart';
 
 import '../../blocs/notes/notes_bloc.dart';
@@ -14,8 +15,15 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 80,
+        title: const Text(
+          "Notes",
+          style:
+              TextStyle(fontWeight: FontWeight.w600, fontSize: 28, height: 1.5),
+        ),
+      ),
       body: SafeArea(
         child: BlocConsumer<NotesBloc, NotesState>(
           bloc: BlocProvider.of(context)..add(const NotesLoadNotesEvent()),
@@ -41,8 +49,6 @@ class HomeScreen extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            print(state);
-
             switch (state.runtimeType) {
               case NotesLoadingState:
                 return const Center(
@@ -50,35 +56,37 @@ class HomeScreen extends StatelessWidget {
                 );
               case NotesLoadedState:
                 final loadedState = state as NotesLoadedState;
-                return Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Container(
-                      height: 55,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide.none),
-                          hintText: 'Search Notes',
-                          filled: true,
-                          fillColor: Colors.grey.shade300,
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                final notes = loadedState.notes;
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [                
+                      SizedBox(
+                        height: 50,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none),
+                            hintText: 'Search Notes',
+                            filled: true,
+                            fillColor: const Color(0xFF252329),
+                            hintStyle: const TextStyle(
+                              color: Colors.white60,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                            ),
+                            prefixIcon: const Icon(Icons.search),
                           ),
-                          prefixIcon: const Icon(Icons.search),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                      const SizedBox(height: 20),
+                      Expanded(
                         child: ListView.separated(
-                          itemCount: loadedState.notes.length,
+                          itemCount: notes.length,
                           itemBuilder: (context, index) {
-                            Note note = loadedState.notes[index];
+                            Note note = notes[index];
 
                             return GestureDetector(
                               onTap: () {
@@ -86,60 +94,15 @@ class HomeScreen extends StatelessWidget {
                                     .read<NotesBloc>()
                                     .add(NotesViewNoteEvent(note));
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              note.title,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              softWrap: true,
-                                            ),
-                                            Text(
-                                              note.body,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.justify,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              softWrap: true,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .error,
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              child: NoteCard(note: note),
                             );
                           },
-                          separatorBuilder: (_, int index) => const Divider(),
+                          separatorBuilder: (_, int index) =>
+                              const SizedBox(height: 8),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               case NotesErrorState:
                 final errorState = state as NotesErrorState;
@@ -157,45 +120,13 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        // backgroundColor:
-
-        //     Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        backgroundColor: const Color(0xff17c90a),
         onPressed: () {
           context.read<NotesBloc>().add(const NotesCreateNoteEvent());
         },
         child: const Icon(
           Icons.add,
         ),
-      ),
-    );
-  }
-}
-
-class GreetingHeader extends StatelessWidget {
-  const GreetingHeader({
-    super.key,
-    required this.textTheme,
-  });
-
-  final TextTheme textTheme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Hi, Suhail Thakrani",
-            style: textTheme.headlineSmall,
-          ),
-          const Icon(
-            CupertinoIcons.person_alt_circle,
-          )
-        ],
       ),
     );
   }
